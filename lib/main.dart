@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'models/theme_model.dart';  
-import 'screens/convertirnumero.dart';  
+import 'models/theme_model.dart';
+import 'screens/convertirnumero.dart';
 import 'screens/convertirdolaresabolivianosyviceversa.dart';
 import 'screens/numeroprimo.dart';
 
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => ThemeModel(), 
+      create: (context) => ThemeModel(),
       child: MyApp(),
     ),
   );
@@ -17,11 +17,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeModel = Provider.of<ThemeModel>(context); 
+    final themeModel = Provider.of<ThemeModel>(context);
     return MaterialApp(
-      title: 'Aplicación Multitarea',
+      title: 'DANAE KATHERIN LARGO B',
       theme: themeModel.isDarkMode
-          ? ThemeData.dark()  
+          ? ThemeData.dark()
           : ThemeData.light(),
       home: HomeScreen(),
     );
@@ -34,65 +34,52 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isIconsVisible = false;
+  int _selectedIndex = 0;
 
-  void _toggleIcons() {
+  // Lista de pantallas que se mostrarán en cada índice.
+  final List<Widget> _screens = [
+    BaseConversionScreen(),
+    CurrencyConverterScreen(),
+    PrimeNumberScreen(),
+    ThemeChangerScreen(),
+  ];
+
+  // Método para actualizar el índice seleccionado.
+  void _onItemTapped(int index) {
     setState(() {
-      _isIconsVisible = !_isIconsVisible;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Pantalla Principal')),
-      body: Center(
-        child: _isIconsVisible
-            ? GridView.count(
-                crossAxisCount: 2,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.calculate),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BaseConversionScreen()), 
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.money),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CurrencyConverterScreen()),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.calculate_outlined),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PrimeNumberScreen()),  
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.brightness_6),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ThemeChangerScreen()),
-                      );
-                    },
-                  ),
-                ],
-              )
-            : ElevatedButton(
-                onPressed: _toggleIcons,
-                child: Text('Mostrar Opciones'),
-              ),
+      appBar: AppBar(title: Text('Aplicación Multitarea')),
+      body: _screens[_selectedIndex], // Pantalla actual basada en el índice seleccionado.
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calculate),
+            label: 'Números',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.money),
+            label: 'Divisas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calculate_outlined),
+            label: 'Primo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.brightness_6),
+            label: 'Tema',
+          ),
+        ],
+        currentIndex: _selectedIndex, // Índice seleccionado actualmente.
+        onTap: _onItemTapped, // Actualiza la pantalla al tocar un ícono.
+        type: BottomNavigationBarType.fixed, // Permite mostrar todos los ítems en la barra.
+        selectedItemColor: Theme.of(context).primaryColor, // Color del ítem seleccionado.
+        unselectedItemColor: Colors.grey, // Color de los ítems no seleccionados.
       ),
     );
   }
